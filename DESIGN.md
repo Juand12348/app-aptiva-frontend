@@ -32,6 +32,7 @@ Tarjeta blanca con borde blanco grueso (`border-[5–6px] border-white`), contor
 - Vacía: borde punteado `slot`.
 - Pegada / seleccionada: fondo `emerald`, texto `navy`.
 - Actual: contorno `navy` 2px.
+- Números de casilla (navegador 1–30, historial): mínimo 11px; si la casilla no cabe, se agranda la casilla, no se encoge el número.
 
 ## Movimiento
 
