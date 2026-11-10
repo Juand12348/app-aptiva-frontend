@@ -12,7 +12,7 @@ export default function PasswordInput(props: Omit<ComponentProps<typeof Input>, 
           type="button"
           onClick={() => setVisible((v) => !v)}
           aria-pressed={visible}
-          className="rounded px-2 py-1 text-sm font-medium text-indigo-700 hover:bg-indigo-50 focus-visible:outline-2 focus-visible:outline-indigo-600"
+          className="rounded-lg px-2.5 py-1.5 text-sm font-semibold text-navy underline decoration-emerald decoration-2 underline-offset-4 transition-colors hover:bg-paper"
         >
           {visible ? 'Ocultar' : 'Mostrar'}
         </button>

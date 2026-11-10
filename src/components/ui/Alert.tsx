@@ -1,16 +1,16 @@
 import type { ReactNode } from 'react'
 
 const variants = {
-  info: 'border-sky-200 bg-sky-50 text-sky-900',
-  error: 'border-red-200 bg-red-50 text-red-800',
-  success: 'border-emerald-200 bg-emerald-50 text-emerald-900',
+  info: 'border-navy/20 bg-paper text-navy',
+  error: 'border-danger/30 bg-danger-tint text-danger',
+  success: 'border-emerald/50 bg-emerald-tint text-emerald-ink',
 }
 
 export default function Alert({ variant = 'info', children }: { variant?: keyof typeof variants; children: ReactNode }) {
   return (
     <div
       role={variant === 'error' ? 'alert' : 'status'}
-      className={`rounded-lg border px-4 py-3 text-sm ${variants[variant]}`}
+      className={`animate-rise rounded-xl border px-4 py-3 text-sm font-medium ${variants[variant]}`}
     >
       {children}
     </div>

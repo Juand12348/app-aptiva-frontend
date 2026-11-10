@@ -65,7 +65,7 @@ export default function Register() {
   }
 
   return (
-    <AuthLayout title="Crear cuenta">
+    <AuthLayout title="Crear cuenta" tagline="Arma tu álbum de matemáticas, lámina por lámina.">
       <form
         noValidate
         className="space-y-4"
@@ -112,11 +112,11 @@ export default function Register() {
           Crear cuenta
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-slate-600">
+      <p className="mt-6 text-center text-sm text-ink-muted">
         ¿Ya tienes cuenta?{' '}
         <Link
           to="/login"
-          className="font-semibold text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo-600"
+          className="font-semibold text-navy underline decoration-emerald decoration-2 underline-offset-4 transition-colors hover:decoration-navy"
         >
           Inicia sesión
         </Link>

@@ -1,3 +1,3 @@
 export default function Result() {
-  return <h1 className="text-2xl font-bold text-slate-900">Resultado</h1>
+  return <h1 className="text-3xl font-extrabold">Resultado</h1>
 }

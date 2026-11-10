@@ -1,1 +1,102 @@
 @import "tailwindcss";
+
+/* Self-hosted variable fonts (SIL OFL), latin subset covers Spanish accents and ñ. */
+@font-face {
+  font-family: "Bricolage Grotesque";
+  src: url("./assets/fonts/bricolage-grotesque-latin.woff2") format("woff2");
+  font-weight: 500 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Figtree";
+  src: url("./assets/fonts/figtree-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+
+@theme {
+  --font-display: "Bricolage Grotesque", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+
+  /* 60 % dominant: pale blue album page */
+  --color-paper: #eaf2fb;
+  --color-paper-deep: #d6e4f5;
+  /* 30 % secondary: navy album cover and ink */
+  --color-navy: #0e2240;
+  --color-navy-soft: #1b3560;
+  --color-ink-muted: #3e5878;
+  --color-slot: #6f89ad; /* empty-slot dashes and field borders (3:1 on white) */
+  /* 10 % accent: emerald owns every live state and call to action */
+  --color-emerald: #10b981;
+  --color-emerald-hover: #0ea572;
+  --color-emerald-ink: #047857; /* emerald as text on light grounds */
+  --color-emerald-tint: #e3f8ef;
+  --color-danger: #b42318;
+  --color-danger-tint: #fdecea;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-stick: cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  --animate-rise: rise 0.6s var(--ease-out-expo) both;
+  --animate-stick: stick 0.7s var(--ease-stick) both;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-nudge: nudge 0.35s ease-out;
+
+  @keyframes rise {
+    from { opacity: 0; transform: translateY(18px); }
+  }
+  /* Signature move: a sticker dropped onto its slot, landing at its own tilt. */
+  @keyframes stick {
+    from { opacity: 0; transform: translateY(-36px) rotate(calc(var(--tilt, 0deg) - 14deg)) scale(1.15); }
+    to { opacity: 1; transform: rotate(var(--tilt, 0deg)); }
+  }
+  @keyframes float {
+    0%, 100% { translate: 0 0; }
+    50% { translate: 0 -6px; }
+  }
+  @keyframes nudge {
+    25% { transform: translateX(-4px); }
+    75% { transform: translateX(4px); }
+  }
+}
+
+/* Empty album slots printed faintly on the navy cover. */
+@utility bg-slots {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='92'%3E%3Crect x='8' y='8' width='56' height='76' rx='9' fill='none' stroke='white' stroke-opacity='.09' stroke-width='2' stroke-dasharray='6 5'/%3E%3C/svg%3E");
+}
+
+@layer base {
+  html {
+    accent-color: var(--color-emerald);
+    caret-color: var(--color-navy);
+    scrollbar-color: var(--color-slot) var(--color-paper);
+    -webkit-tap-highlight-color: transparent;
+  }
+  body {
+    background: var(--color-paper);
+    color: var(--color-navy);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+  }
+  ::selection {
+    background: var(--color-emerald);
+    color: var(--color-navy);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-display);
+    text-wrap: balance;
+    letter-spacing: -0.02em;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-navy);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

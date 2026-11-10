@@ -1,3 +1,3 @@
 export default function History() {
-  return <h1 className="text-2xl font-bold text-slate-900">Historial</h1>
+  return <h1 className="text-3xl font-extrabold">Historial</h1>
 }

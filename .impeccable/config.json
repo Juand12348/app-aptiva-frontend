@@ -1,0 +1,17 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "dark-glow",
+        "value": "*",
+        "files": [
+          ".impeccable/mocks/decision/assigned.html"
+        ],
+        "createdAt": "2026-11-10T16:01:57.844Z",
+        "reason": "agent: shadow is neutral navy elevation on the pale-blue page, not a chromatic glow; decision sketch only"
+      }
+    ]
+  }
+}

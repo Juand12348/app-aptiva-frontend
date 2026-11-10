@@ -39,7 +39,7 @@ export default function Login() {
   }
 
   return (
-    <AuthLayout title="Iniciar sesión">
+    <AuthLayout title="Iniciar sesión" tagline="Sigue llenando tu álbum de matemáticas.">
       {(sessionExpired || registered) && (
         <div className="mb-4">
           {sessionExpired ? (
@@ -83,11 +83,11 @@ export default function Login() {
           Iniciar sesión
         </Button>
       </form>
-      <p className="mt-6 text-center text-sm text-slate-600">
+      <p className="mt-6 text-center text-sm text-ink-muted">
         ¿No tienes cuenta?{' '}
         <Link
           to="/registro"
-          className="font-semibold text-indigo-700 hover:underline focus-visible:outline-2 focus-visible:outline-indigo-600"
+          className="font-semibold text-navy underline decoration-emerald decoration-2 underline-offset-4 transition-colors hover:decoration-navy"
         >
           Crear cuenta
         </Link>

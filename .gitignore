@@ -25,3 +25,7 @@ dist-ssr
 
 # Env
 .env
+
+# Impeccable working artifacts
+.impeccable/review/
+.impeccable/mocks/
