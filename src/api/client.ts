@@ -89,3 +89,6 @@ async function parseError(res: Response): Promise<ApiError> {
 }
 
 export const health = () => request<HealthResponse>('/health', { auth: false })
+
+/** User-facing message for anything thrown by an API call. */
+export const getErrorMessage = (err: unknown) => (err instanceof ApiError ? err.message : GENERIC_MESSAGE)
