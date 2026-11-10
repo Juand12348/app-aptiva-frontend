@@ -39,25 +39,28 @@ export default function ComponentBarChart({ components }: { components: Componen
           </BarChart>
         </ResponsiveContainer>
       </div>
-      <table className="sr-only">
-        <caption>Puntaje por componente, sobre 10</caption>
-        <thead>
-          <tr>
-            <th scope="col">Componente</th>
-            <th scope="col">Puntaje</th>
-          </tr>
-        </thead>
-        <tbody>
-          {components.map((c) => (
-            <tr key={c.component}>
-              <th scope="row">{c.component}</th>
-              <td>
-                {c.score} de {c.max_score}
-              </td>
+      {/* A <table> ignores the 1px sr-only box; a block wrapper keeps it from widening the page. */}
+      <div className="sr-only">
+        <table>
+          <caption>Puntaje por componente, sobre 10</caption>
+          <thead>
+            <tr>
+              <th scope="col">Componente</th>
+              <th scope="col">Puntaje</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {components.map((c) => (
+              <tr key={c.component}>
+                <th scope="row">{c.component}</th>
+                <td>
+                  {c.score} de {c.max_score}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </>
   )
 }

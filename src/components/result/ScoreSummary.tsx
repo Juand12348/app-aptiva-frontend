@@ -1,12 +1,12 @@
 import type { ExamResult } from '../../api/types'
-import { percent, scoreBand, type ScoreBand } from '../../lib/format'
+import { percent, SCORE_BAND_PILL, scoreBand, type ScoreBand } from '../../lib/format'
 import { useCountUp } from '../../lib/useCountUp'
 import Confetti from './Confetti'
 
-const BAND: Record<ScoreBand, { pill: string; message: string }> = {
-  high: { pill: 'bg-emerald text-navy', message: '¡Excelente resultado! Dominas buena parte del examen.' },
-  mid: { pill: 'bg-amber-tint text-amber-ink', message: 'Vas por buen camino. Con un poco de práctica subes de nivel.' },
-  low: { pill: 'bg-danger-tint text-danger', message: 'Hay bastante por reforzar, y abajo te contamos por dónde empezar.' },
+const MESSAGE: Record<ScoreBand, string> = {
+  high: '¡Excelente resultado! Dominas buena parte del examen.',
+  mid: 'Vas por buen camino. Con un poco de práctica subes de nivel.',
+  low: 'Hay bastante por reforzar, y abajo te contamos por dónde empezar.',
 }
 
 interface Props {
@@ -41,11 +41,11 @@ export default function ScoreSummary({ result, celebrate }: Props) {
             {result.total_score} de {result.max_score} puntos
           </span>
         </p>
-        <span className={`mb-3 animate-pop rounded-full px-4 py-1.5 font-display text-xl font-extrabold tabular-nums ${BAND[band].pill}`}>
+        <span className={`mb-3 animate-pop rounded-full px-4 py-1.5 font-display text-xl font-extrabold tabular-nums ${SCORE_BAND_PILL[band]}`}>
           {pct} %
         </span>
       </div>
-      <p className="mt-5 max-w-xl text-lg text-paper-deep">{BAND[band].message}</p>
+      <p className="mt-5 max-w-xl text-lg text-paper-deep">{MESSAGE[band]}</p>
     </section>
   )
 }
