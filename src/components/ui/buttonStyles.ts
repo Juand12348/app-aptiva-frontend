@@ -7,4 +7,6 @@ export const buttonVariants = {
     'bg-emerald text-navy shadow-[0_6px_16px_rgb(14_34_64/0.18)] hover:bg-emerald-hover hover:shadow-[0_10px_22px_rgb(14_34_64/0.22)]',
   secondary: 'bg-navy text-white shadow-[0_6px_16px_rgb(14_34_64/0.2)] hover:bg-navy-soft',
   outline: 'border-2 border-navy bg-white text-navy hover:bg-paper',
+  /** Quiet action sitting on a navy surface. */
+  onNavy: 'border-2 border-white/40 text-white hover:bg-white hover:text-navy focus-visible:outline-emerald',
 }

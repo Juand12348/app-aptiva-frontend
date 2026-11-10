@@ -54,6 +54,10 @@
     0%, 100% { translate: 0 0; }
     50% { translate: 0 -6px; }
   }
+  /* Score bars fill from the left. */
+  @keyframes grow {
+    from { transform: scaleX(0); }
+  }
   @keyframes nudge {
     25% { transform: translateX(-4px); }
     75% { transform: translateX(4px); }

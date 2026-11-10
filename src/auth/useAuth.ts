@@ -20,3 +20,10 @@ export function useAuth() {
   if (!ctx) throw new Error('useAuth must be used inside AuthProvider')
   return ctx
 }
+
+/** The logged-in student, for pages under ProtectedRoute (which never renders them without one). */
+export function useStudent() {
+  const { student } = useAuth()
+  if (!student) throw new Error('useStudent requires an authenticated route')
+  return student
+}
