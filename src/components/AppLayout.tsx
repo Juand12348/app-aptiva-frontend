@@ -1,5 +1,7 @@
+import { Suspense } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { useAuth } from '../auth/useAuth'
+import Spinner from './ui/Spinner'
 
 const onNavy = 'focus-visible:outline-emerald'
 
@@ -41,7 +43,16 @@ export default function AppLayout() {
       </header>
       {/* Keyed by route so every page enters with the same rise. */}
       <main key={pathname} className="mx-auto max-w-5xl animate-rise px-4 py-8">
-        <Outlet />
+        <Suspense
+          fallback={
+            <div role="status" className="flex justify-center py-20 text-navy">
+              <Spinner className="h-8 w-8 border-[3px]" />
+              <span className="sr-only">Cargando…</span>
+            </div>
+          }
+        >
+          <Outlet />
+        </Suspense>
       </main>
     </div>
   )

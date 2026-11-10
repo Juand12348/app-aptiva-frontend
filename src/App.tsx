@@ -1,15 +1,18 @@
+import { lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import { AuthProvider } from './auth/AuthContext'
 import GuestRoute from './auth/GuestRoute'
 import ProtectedRoute from './auth/ProtectedRoute'
 import AppLayout from './components/AppLayout'
 import Exam from './pages/Exam'
-import History from './pages/History'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import NotFound from './pages/NotFound'
 import Register from './pages/Register'
-import Result from './pages/Result'
+
+// Only these two screens draw charts: lazy-load them so Recharts stays out of the first bundle.
+const Result = lazy(() => import('./pages/Result'))
+const History = lazy(() => import('./pages/History'))
 
 export default function App() {
   return (

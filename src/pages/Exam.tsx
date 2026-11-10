@@ -2,6 +2,7 @@ import { useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ApiError, NETWORK_ERROR_STATUS } from '../api/client'
 import { submitExam } from '../api/exams'
+import { useSessionEndingSoon } from '../auth/tokenExpiry'
 import { useStudent } from '../auth/useAuth'
 import QuestionCard from '../components/exam/QuestionCard'
 import QuestionNavigator from '../components/exam/QuestionNavigator'
@@ -24,6 +25,8 @@ export default function Exam() {
   const [submitError, setSubmitError] = useState<SubmitError | null>(null)
   // submit can only succeed once: block a second request before React re-renders.
   const submittingRef = useRef(false)
+  // The token lasts 60 min with no refresh: warn before it expires mid-exam.
+  const sessionEndingSoon = useSessionEndingSoon()
 
   // Never create an exam from here: only Home's click does.
   if (!saved) return <Navigate to="/" replace />
@@ -102,6 +105,11 @@ export default function Exam() {
     {submitting && <SubmittingOverlay />}
     <div className="pb-4 lg:grid lg:grid-cols-[1fr_20rem] lg:items-start lg:gap-8">
       <div>
+        {sessionEndingSoon && (
+          <div className="mb-4">
+            <Alert>Tu sesión vence pronto; envía tu examen. Tus respuestas están guardadas en este dispositivo.</Alert>
+          </div>
+        )}
         <section className="bg-slots rounded-2xl bg-navy px-5 pt-5 pb-16 text-white sm:px-7">
           <div className="flex items-center justify-between gap-4">
             <p className="text-sm font-semibold text-paper-deep">
