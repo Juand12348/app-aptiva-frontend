@@ -33,6 +33,10 @@
   --color-emerald-tint: #e3f8ef;
   --color-danger: #b42318;
   --color-danger-tint: #fdecea;
+  --color-amber-ink: #b45309;
+  --color-amber-tint: #fef3c7;
+  /* Data marks: navy-family mid blue (passes the dataviz lightness/chroma checks; navy reads as gray-black). */
+  --color-data: #2b5ca8;
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-stick: cubic-bezier(0.34, 1.56, 0.64, 1);
@@ -59,6 +63,12 @@
   @keyframes float {
     0%, 100% { translate: 0 0; }
     50% { translate: 0 -6px; }
+  }
+  /* Celebration: mini stickers falling across the viewport. */
+  @keyframes fall {
+    from { transform: translateY(-12vh) rotate(0deg); opacity: 1; }
+    85% { opacity: 1; }
+    to { transform: translateY(110vh) rotate(var(--spin, 360deg)); opacity: 0; }
   }
   /* Score bars fill from the left. */
   @keyframes grow {

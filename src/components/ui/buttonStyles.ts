@@ -1,6 +1,6 @@
 // Shared with link-styled buttons so a <Link> can look exactly like a <Button>.
 export const buttonBase =
-  'inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-display text-base font-bold tracking-tight transition duration-300 ease-[var(--ease-out-expo)] hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60'
+  'inline-flex items-center justify-center gap-2 rounded-xl px-5 py-3 font-display text-base font-bold tracking-tight transition duration-300 ease-out-expo hover:-translate-y-0.5 active:translate-y-0 active:scale-[0.98] disabled:pointer-events-none disabled:opacity-60'
 
 export const buttonVariants = {
   primary:

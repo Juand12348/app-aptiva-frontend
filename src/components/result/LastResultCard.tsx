@@ -89,7 +89,7 @@ export default function LastResultCard() {
                 </div>
                 <div className="mt-1 h-2.5 overflow-hidden rounded-full bg-paper">
                   <div
-                    className="h-full origin-left animate-[grow_0.9s_var(--ease-out-expo)_both] rounded-full bg-navy"
+                    className="h-full origin-left animate-[grow_0.9s_var(--ease-out-expo)_both] rounded-full bg-data"
                     style={{ width: `${percent(c.score, c.max_score)}%` }}
                   />
                 </div>

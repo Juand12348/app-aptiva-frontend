@@ -1,20 +1,29 @@
-import { useState } from 'react'
-import { Navigate } from 'react-router-dom'
+import { useRef, useState } from 'react'
+import { Navigate, useNavigate } from 'react-router-dom'
+import { ApiError, NETWORK_ERROR_STATUS } from '../api/client'
+import { submitExam } from '../api/exams'
 import { useStudent } from '../auth/useAuth'
 import QuestionCard from '../components/exam/QuestionCard'
 import QuestionNavigator from '../components/exam/QuestionNavigator'
+import SubmittingOverlay from '../components/exam/SubmittingOverlay'
 import Alert from '../components/ui/Alert'
 import Button from '../components/ui/Button'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import { COMPONENT_NOTES, TOTAL_QUESTIONS } from '../lib/constants'
-import { answeredCount, loadExam, saveExam, type SavedExam } from '../lib/examStorage'
+import { answeredCount, clearExam, loadExam, saveExam, type SavedExam } from '../lib/examStorage'
+
+type SubmitError = { kind: 'retry' | 'notFound' | 'invalid'; message: string }
 
 export default function Exam() {
   const student = useStudent()
+  const navigate = useNavigate()
   const [saved, setSaved] = useState(() => loadExam(student.id))
   const [navOpen, setNavOpen] = useState(false)
   const [confirmOpen, setConfirmOpen] = useState(false)
-  const [notice, setNotice] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [submitError, setSubmitError] = useState<SubmitError | null>(null)
+  // submit can only succeed once: block a second request before React re-renders.
+  const submittingRef = useRef(false)
 
   // Never create an exam from here: only Home's click does.
   if (!saved) return <Navigate to="/" replace />
@@ -42,13 +51,55 @@ export default function Exam() {
     update({ ...saved, answers: { ...saved.answers, [question.question_id]: optionId } })
   }
 
-  function submit() {
-    // shortcut: the real POST /submit lands in phase 5; this only closes the dialog.
+  async function submit() {
+    if (!saved || submittingRef.current) return
+    submittingRef.current = true
     setConfirmOpen(false)
-    setNotice('El envío del examen se conecta en la siguiente fase. Tus respuestas siguen guardadas.')
+    setSubmitting(true)
+    setSubmitError(null)
+
+    const examId = saved.exam.exam_id
+    const answers = Object.entries(saved.answers).map(([questionId, optionId]) => ({
+      question_id: Number(questionId),
+      option_id: optionId,
+    }))
+
+    try {
+      const result = await submitExam(examId, { answers })
+      clearExam(student.id)
+      navigate(`/resultado/${examId}`, { replace: true, state: { result } })
+    } catch (err) {
+      submittingRef.current = false
+      setSubmitting(false)
+      const status = err instanceof ApiError ? err.status : NETWORK_ERROR_STATUS
+      if (status === 409) {
+        // Already graded (e.g. a retry after a timeout that did reach the server): treat as success.
+        clearExam(student.id)
+        navigate(`/resultado/${examId}`, { replace: true, state: { alreadyGraded: true } })
+      } else if (status === 401) {
+        // The client already sent the student to login; answers stay saved for after re-login.
+      } else if (status === 404) {
+        setSubmitError({ kind: 'notFound', message: 'No encontramos este examen.' })
+      } else if (status === NETWORK_ERROR_STATUS || status >= 500) {
+        setSubmitError({
+          kind: 'retry',
+          message: 'No pudimos enviar tu examen. Tus respuestas están guardadas, intenta de nuevo.',
+        })
+      } else {
+        // 422: the exam is still open, the student can fix it and resend.
+        setSubmitError({ kind: 'invalid', message: err instanceof ApiError ? err.message : 'Revisa tus respuestas.' })
+      }
+    }
+  }
+
+  function discard() {
+    clearExam(student.id)
+    navigate('/', { replace: true })
   }
 
   return (
+    <>
+    {submitting && <SubmittingOverlay />}
     <div className="pb-4 lg:grid lg:grid-cols-[1fr_20rem] lg:items-start lg:gap-8">
       <div>
         <section className="bg-slots rounded-2xl bg-navy px-5 pt-5 pb-16 text-white sm:px-7">
@@ -70,7 +121,7 @@ export default function Exam() {
             className="mt-3 h-2 overflow-hidden rounded-full bg-white/15"
           >
             <div
-              className="h-full rounded-full bg-emerald transition-[width] duration-500 ease-[var(--ease-out-expo)]"
+              className="h-full rounded-full bg-emerald transition-[width] duration-500 ease-out-expo"
               style={{ width: `${(answered / TOTAL_QUESTIONS) * 100}%` }}
             />
           </div>
@@ -87,9 +138,15 @@ export default function Exam() {
           onSelect={answer}
         />
 
-        {notice && (
-          <div className="mt-5">
-            <Alert>{notice}</Alert>
+        {submitError && (
+          <div className="mt-5 space-y-3">
+            <Alert variant="error">{submitError.message}</Alert>
+            {submitError.kind === 'retry' && <Button onClick={() => void submit()}>Reintentar envío</Button>}
+            {submitError.kind === 'notFound' && (
+              <Button variant="outline" onClick={discard}>
+                Descartar y volver al inicio
+              </Button>
+            )}
           </div>
         )}
 
@@ -151,7 +208,7 @@ export default function Exam() {
         open={confirmOpen}
         title="¿Enviar tu examen?"
         confirmLabel="Enviar"
-        onConfirm={submit}
+        onConfirm={() => void submit()}
         onCancel={() => setConfirmOpen(false)}
       >
         <p>
@@ -160,5 +217,6 @@ export default function Exam() {
         </p>
       </ConfirmDialog>
     </div>
+    </>
   )
 }

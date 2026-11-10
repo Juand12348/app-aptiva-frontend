@@ -10,3 +10,8 @@ const dateFormat = new Intl.DateTimeFormat('es-CO', {
 export const formatDate = (iso: string) => dateFormat.format(new Date(iso))
 
 export const percent = (score: number, max: number) => (max > 0 ? Math.round((score / max) * 100) : 0)
+
+export type ScoreBand = 'low' | 'mid' | 'high'
+
+/** <50 % low, 50–75 % mid, >75 % high. */
+export const scoreBand = (pct: number): ScoreBand => (pct > 75 ? 'high' : pct >= 50 ? 'mid' : 'low')
