@@ -1,0 +1,33 @@
+{
+  "exam_id": 42,
+  "started_at": "2026-11-13T15:00:00.123456Z",
+  "expires_at": "2026-11-13T16:00:00.123456Z",
+  "questions": [
+    {
+      "question_id": 17,
+      "position": 1,
+      "component": "Cálculo y Álgebra",
+      "difficulty": "Medio",
+      "statement": "¿Cuál es la derivada de f(x) = x³?",
+      "options": [
+        { "option_id": 66, "text": "x²" },
+        { "option_id": 67, "text": "3x²" },
+        { "option_id": 68, "text": "3x" },
+        { "option_id": 69, "text": "x³/3" }
+      ]
+    },
+    {
+      "question_id": 31,
+      "position": 2,
+      "component": "Cálculo y Álgebra",
+      "difficulty": "Fácil",
+      "statement": "Resuelve 2x + 4 = 10.",
+      "options": [
+        { "option_id": 122, "text": "x = 2" },
+        { "option_id": 123, "text": "x = 3" },
+        { "option_id": 124, "text": "x = 4" },
+        { "option_id": 125, "text": "x = 7" }
+      ]
+    }
+  ]
+}

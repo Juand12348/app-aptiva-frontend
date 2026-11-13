@@ -20,7 +20,8 @@ export interface Question {
 
 export interface StartExamResponse {
   exam_id: number;
-  started_at: string;          // ISO 8601 UTC
+  started_at: string;          // ISO 8601 UTC (hora del servidor: base para corregir el reloj)
+  expires_at: string;          // ISO 8601 UTC, límite del examen (el backend no bloquea envíos tardíos)
   questions: Question[];       // siempre 30
 }
 
@@ -58,6 +59,33 @@ export interface ExamHistoryItem {
   max_score: number;
   components: ComponentScore[];
   has_diagnosis: boolean;
+}
+
+/** Acierto agregado; `label` es Difícil/Fácil/Medio (alfabético) o "1-5"/"6-10". */
+export interface AccuracyBucket { label: string; correct: number; total: number; accuracy: number; }  // accuracy 0..1
+
+export interface EvolutionPoint {
+  exam_id: number;
+  finished_at: string;
+  total_score: number;
+  max_score: number;
+  component_scores: Record<Component, number>;
+}
+
+export interface ComponentStats {
+  component: Component;
+  average_score: number;
+  latest_score: number;
+  max_score: number;           // 10
+  by_difficulty: AccuracyBucket[];
+}
+
+export interface StudentStats {
+  exams_count: number;         // 0 → estado vacío
+  evolution: EvolutionPoint[]; // del más antiguo al más reciente
+  components: ComponentStats[];
+  by_difficulty: AccuracyBucket[];
+  by_position_in_block: AccuracyBucket[];  // "1-5" y "6-10"
 }
 
 export interface HealthResponse { status: string; database: string; }

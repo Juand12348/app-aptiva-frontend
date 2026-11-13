@@ -19,6 +19,7 @@ Fuente: páginas de Notion «Endpoints Auth», «Endpoints Exámenes» y «Endpo
 | 7 | POST | `/api/v1/exams/{exam_id}/diagnosis` | Sí | Regenerar diagnóstico si falló |
 | 8 | GET | `/api/v1/exams/{exam_id}/result` | Sí | Resultado de un examen ya enviado |
 | 9 | GET | `/api/v1/students/me/exams` | Sí | Historial de exámenes enviados |
+| 10 | GET | `/api/v1/students/me/stats` | Sí | Estadísticas agregadas para el dashboard |
 
 ---
 
@@ -47,7 +48,8 @@ export interface Question {
 
 export interface StartExamResponse {
   exam_id: number;
-  started_at: string;          // ISO 8601 UTC
+  started_at: string;          // ISO 8601 UTC (hora del servidor: base para corregir el reloj)
+  expires_at: string;          // ISO 8601 UTC, límite del examen (el backend no bloquea envíos tardíos)
   questions: Question[];       // siempre 30
 }
 
@@ -85,6 +87,33 @@ export interface ExamHistoryItem {
   max_score: number;
   components: ComponentScore[];
   has_diagnosis: boolean;
+}
+
+/** Acierto agregado; `label` es Difícil/Fácil/Medio (alfabético) o "1-5"/"6-10". */
+export interface AccuracyBucket { label: string; correct: number; total: number; accuracy: number; }  // accuracy 0..1
+
+export interface EvolutionPoint {
+  exam_id: number;
+  finished_at: string;
+  total_score: number;
+  max_score: number;
+  component_scores: Record<Component, number>;
+}
+
+export interface ComponentStats {
+  component: Component;
+  average_score: number;
+  latest_score: number;
+  max_score: number;           // 10
+  by_difficulty: AccuracyBucket[];
+}
+
+export interface StudentStats {
+  exams_count: number;         // 0 → estado vacío
+  evolution: EvolutionPoint[]; // del más antiguo al más reciente
+  components: ComponentStats[];
+  by_difficulty: AccuracyBucket[];
+  by_position_in_block: AccuracyBucket[];  // "1-5" y "6-10"
 }
 ```
 
@@ -161,6 +190,7 @@ Respuesta `201`:
 {
   "exam_id": 12,
   "started_at": "2026-11-06T15:04:05.123456Z",
+  "expires_at": "2026-11-06T16:04:05.123456Z",
   "questions": [
     {
       "question_id": 87,
@@ -179,6 +209,8 @@ Respuesta `201`:
 }
 ```
 
+- `expires_at` = `started_at` + 1 h (según el ejemplo del backend). **El backend no bloquea envíos tardíos**: el límite solo lo aplica el front.
+- Reloj: `offset = started_at − Date.now()` al recibir la respuesta; hora actual = `Date.now() + offset`. Así el contador no depende de la hora del PC.
 - Siempre 30 preguntas, 10 por componente, sin repetir.
 - `position` 1–30, agrupadas por componente: **1–10 Cálculo y Álgebra, 11–20 Estadística, 21–30 Geometría**.
 - Siempre 4 opciones; ninguna indica cuál es la correcta.
@@ -292,6 +324,16 @@ Lista los exámenes **enviados** del estudiante, del más reciente al más antig
 - Duración = `finished_at − started_at`.
 - `has_diagnosis: false` → mostrar aviso en la tabla (Gemini falló y nunca se regeneró).
 - **No incluye el texto del diagnóstico**; para verlo abrir el examen con `/result`.
+- Errores: solo 401.
+
+## 10. `GET /api/v1/students/me/stats`
+Solo lectura. Ejemplo completo en `docs/data/student.json`. Forma: ver `StudentStats` arriba.
+
+- `evolution`: del examen más antiguo al más reciente; `total_score` sobre `max_score`.
+- `by_difficulty` (global y por componente) llega **alfabético** (Difícil, Fácil, Medio): reordenar en el front a **Fácil, Medio, Difícil**.
+- `by_position_in_block`: `"1-5"` frente a `"6-10"`; mostrar como pista orientativa, no como conclusión.
+- `accuracy` es una fracción 0..1 (redondeada a 2 decimales).
+- Sin exámenes: `exams_count: 0` → estado vacío invitando al primer examen (no se verificó qué trae el resto de campos en ese caso; tratarlos como posiblemente vacíos).
 - Errores: solo 401.
 
 ---

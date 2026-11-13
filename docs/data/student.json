@@ -1,0 +1,63 @@
+{
+  "exams_count": 2,
+  "evolution": [
+    {
+      "exam_id": 40,
+      "finished_at": "2026-11-10T14:35:00Z",
+      "total_score": 18,
+      "max_score": 30,
+      "component_scores": { "Cálculo y Álgebra": 5, "Estadística": 7, "Geometría": 6 }
+    },
+    {
+      "exam_id": 42,
+      "finished_at": "2026-11-13T15:48:00Z",
+      "total_score": 24,
+      "max_score": 30,
+      "component_scores": { "Cálculo y Álgebra": 8, "Estadística": 9, "Geometría": 7 }
+    }
+  ],
+  "components": [
+    {
+      "component": "Cálculo y Álgebra",
+      "average_score": 6.5,
+      "latest_score": 8,
+      "max_score": 10,
+      "by_difficulty": [
+        { "label": "Difícil", "correct": 3, "total": 7, "accuracy": 0.43 },
+        { "label": "Fácil", "correct": 6, "total": 7, "accuracy": 0.86 },
+        { "label": "Medio", "correct": 4, "total": 6, "accuracy": 0.67 }
+      ]
+    },
+    {
+      "component": "Estadística",
+      "average_score": 8.0,
+      "latest_score": 9,
+      "max_score": 10,
+      "by_difficulty": [
+        { "label": "Difícil", "correct": 4, "total": 6, "accuracy": 0.67 },
+        { "label": "Fácil", "correct": 7, "total": 7, "accuracy": 1.0 },
+        { "label": "Medio", "correct": 5, "total": 7, "accuracy": 0.71 }
+      ]
+    },
+    {
+      "component": "Geometría",
+      "average_score": 6.5,
+      "latest_score": 7,
+      "max_score": 10,
+      "by_difficulty": [
+        { "label": "Difícil", "correct": 3, "total": 6, "accuracy": 0.5 },
+        { "label": "Fácil", "correct": 6, "total": 7, "accuracy": 0.86 },
+        { "label": "Medio", "correct": 4, "total": 7, "accuracy": 0.57 }
+      ]
+    }
+  ],
+  "by_difficulty": [
+    { "label": "Difícil", "correct": 10, "total": 19, "accuracy": 0.53 },
+    { "label": "Fácil", "correct": 19, "total": 21, "accuracy": 0.9 },
+    { "label": "Medio", "correct": 13, "total": 20, "accuracy": 0.65 }
+  ],
+  "by_position_in_block": [
+    { "label": "1-5", "correct": 19, "total": 30, "accuracy": 0.63 },
+    { "label": "6-10", "correct": 23, "total": 30, "accuracy": 0.77 }
+  ]
+}
