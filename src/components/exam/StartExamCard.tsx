@@ -13,13 +13,14 @@ const SECTIONS = [
 
 interface Props {
   saved: SavedExam | null
+  expired: boolean
   starting: boolean
   error: string
   onStart: () => void
   onDiscard: () => void
 }
 
-export default function StartExamCard({ saved, starting, error, onStart, onDiscard }: Props) {
+export default function StartExamCard({ saved, expired, starting, error, onStart, onDiscard }: Props) {
   const questions = saved ? [...saved.exam.questions].sort((a, b) => a.position - b.position) : []
 
   return (
@@ -28,7 +29,7 @@ export default function StartExamCard({ saved, starting, error, onStart, onDisca
       className="bg-slots rounded-2xl bg-navy p-6 text-white shadow-[0_16px_36px_rgb(14_34_64/0.22)] sm:p-8"
     >
       <h2 id="exam-card-title" className="text-3xl font-extrabold sm:text-4xl">
-        {saved ? 'Examen en curso' : 'Examen de matemáticas'}
+        {saved ? (expired ? 'Tiempo agotado' : 'Examen en curso') : 'Examen de matemáticas'}
       </h2>
 
       {saved ? (
@@ -36,6 +37,7 @@ export default function StartExamCard({ saved, starting, error, onStart, onDisca
           <p className="mt-3 text-paper-deep">
             Llevas <strong className="font-display text-xl text-white tabular-nums">{answeredCount(saved)}</strong> de 30
             preguntas respondidas. Tus respuestas están guardadas en este dispositivo.
+            {expired && ' Se acabó el tiempo: al continuar enviaremos lo que respondiste para calificarlo.'}
           </p>
           <div aria-hidden="true" className="mt-6 grid grid-cols-10 gap-1.5 sm:max-w-md">
             {questions.map((q, i) =>
@@ -54,8 +56,8 @@ export default function StartExamCard({ saved, starting, error, onStart, onDisca
       ) : (
         <>
           <p className="mt-3 max-w-prose text-paper-deep">
-            30 preguntas en 3 componentes, 10 por cada uno. Sin límite de tiempo. Al final, la IA te dice qué dominas y
-            qué te conviene reforzar.
+            30 preguntas en 3 componentes, 10 por cada uno. Tienes 60 minutos desde que lo inicias; si se acaban, enviamos
+            lo que lleves respondido. Al final, la IA te dice qué dominas y qué te conviene reforzar.
           </p>
           <ul className="mt-6 grid grid-cols-3 gap-3 sm:max-w-md" aria-label="Componentes del examen">
             {SECTIONS.map((s, i) => (
@@ -82,7 +84,7 @@ export default function StartExamCard({ saved, starting, error, onStart, onDisca
         {saved ? (
           <>
             <Link to="/examen" className={`${buttonBase} ${buttonVariants.primary} focus-visible:outline-emerald`}>
-              Continuar examen
+              {expired ? 'Enviar lo respondido' : 'Continuar examen'}
             </Link>
             <Button variant="onNavy" onClick={onDiscard} disabled={starting}>
               Descartar y empezar uno nuevo

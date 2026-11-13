@@ -18,7 +18,12 @@ export function useStartExam(studentId: number) {
     setError('')
     try {
       const exam = await startExam()
-      saveExam(studentId, { exam, answers: {}, currentIndex: 0 })
+      saveExam(studentId, {
+        exam,
+        answers: {},
+        currentIndex: 0,
+        clockOffset: Date.parse(exam.started_at) - Date.now(),
+      })
       navigate('/examen')
     } catch (err) {
       startingRef.current = false

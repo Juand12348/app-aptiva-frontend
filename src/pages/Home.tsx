@@ -3,12 +3,14 @@ import { useStudent } from '../auth/useAuth'
 import StartExamCard from '../components/exam/StartExamCard'
 import LastResultCard from '../components/result/LastResultCard'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
-import { clearExam, loadExam } from '../lib/examStorage'
+import { clearExam, loadExam, msLeft } from '../lib/examStorage'
 import { useStartExam } from '../lib/useStartExam'
 
 export default function Home() {
   const student = useStudent()
   const [saved, setSaved] = useState(() => loadExam(student.id))
+  // Read once on mount: an expired exam is sent automatically when the student opens it.
+  const [expired] = useState(() => saved !== null && msLeft(saved) <= 0)
   const [confirmOpen, setConfirmOpen] = useState(false)
   const { start, starting, error } = useStartExam(student.id)
 
@@ -26,13 +28,18 @@ export default function Home() {
       <header>
         <h1 className="text-4xl font-extrabold sm:text-5xl">Hola, {firstName}</h1>
         <p className="mt-2 text-lg text-ink-muted">
-          {saved ? 'Tienes un examen a medio llenar. Retómalo cuando quieras.' : '¿Listo para medir tu nivel en matemáticas?'}
+          {saved
+            ? expired
+              ? 'Se acabó el tiempo de tu examen. Envíalo para ver tu resultado.'
+              : 'Tienes un examen en curso. Retómalo antes de que se acabe el tiempo.'
+            : '¿Listo para medir tu nivel en matemáticas?'}
         </p>
       </header>
 
       <div className="grid gap-6 lg:grid-cols-[1.4fr_1fr] lg:items-start">
         <StartExamCard
           saved={saved}
+          expired={expired}
           starting={starting}
           error={error}
           onStart={() => void start()}

@@ -1,9 +1,10 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Navigate, useNavigate } from 'react-router-dom'
 import { ApiError, NETWORK_ERROR_STATUS } from '../api/client'
 import { submitExam } from '../api/exams'
 import { useSessionEndingSoon } from '../auth/tokenExpiry'
 import { useStudent } from '../auth/useAuth'
+import ExamTimer, { URGENT_MS, WARN_MS } from '../components/exam/ExamTimer'
 import QuestionCard from '../components/exam/QuestionCard'
 import QuestionNavigator from '../components/exam/QuestionNavigator'
 import SubmittingOverlay from '../components/exam/SubmittingOverlay'
@@ -12,6 +13,7 @@ import Button from '../components/ui/Button'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import { COMPONENT_NOTES, TOTAL_QUESTIONS } from '../lib/constants'
 import { answeredCount, clearExam, loadExam, saveExam, type SavedExam } from '../lib/examStorage'
+import { useExamClock } from '../lib/useExamClock'
 
 type SubmitError = { kind: 'retry' | 'notFound' | 'invalid'; message: string }
 
@@ -27,6 +29,15 @@ export default function Exam() {
   const submittingRef = useRef(false)
   // The token lasts 60 min with no refresh: warn before it expires mid-exam.
   const sessionEndingSoon = useSessionEndingSoon()
+  const left = useExamClock(saved)
+  const expired = left === 0
+
+  // Time's up (also when resuming an already expired exam): send what is answered. The backend doesn't
+  // enforce the deadline, so the front does. submit() is guarded by submittingRef; this fires once on the flip.
+  useEffect(() => {
+    if (expired) void submit()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [expired])
 
   // Never create an exam from here: only Home's click does.
   if (!saved) return <Navigate to="/" replace />
@@ -110,15 +121,27 @@ export default function Exam() {
             <Alert>Tu sesión vence pronto; envía tu examen. Tus respuestas están guardadas en este dispositivo.</Alert>
           </div>
         )}
+        {left > 0 && left <= URGENT_MS ? (
+          <div className="mb-4">
+            <Alert variant="error">Queda menos de 1 minuto. Al llegar a 0 enviaremos tu examen automáticamente.</Alert>
+          </div>
+        ) : left > 0 && left <= WARN_MS ? (
+          <div className="mb-4">
+            <Alert>Quedan menos de 10 minutos. Al llegar a 0 enviaremos tu examen con lo que lleves respondido.</Alert>
+          </div>
+        ) : null}
         <section className="bg-slots rounded-2xl bg-navy px-5 pt-5 pb-16 text-white sm:px-7">
-          <div className="flex items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center justify-between gap-x-4 gap-y-3">
             <p className="text-sm font-semibold text-paper-deep">
               <span className="font-display text-lg text-white tabular-nums">{answered}</span> de {TOTAL_QUESTIONS}{' '}
               respondidas
             </p>
-            <Button variant="onNavy" onClick={() => setConfirmOpen(true)} className="px-3.5 py-1.5 text-sm lg:hidden">
-              Enviar examen
-            </Button>
+            <div className="flex items-center gap-3">
+              <ExamTimer left={left} />
+              <Button variant="onNavy" onClick={() => setConfirmOpen(true)} className="px-3.5 py-1.5 text-sm lg:hidden">
+                Enviar examen
+              </Button>
+            </div>
           </div>
           <div
             role="progressbar"

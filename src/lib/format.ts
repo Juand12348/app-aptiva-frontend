@@ -31,6 +31,15 @@ export function formatDuration(startIso: string, endIso: string) {
   return minutes < 1 ? 'menos de 1 min' : `${minutes} min`
 }
 
+/** "59:07", or "1:00:00" from one hour up. */
+export function formatCountdown(ms: number) {
+  const total = Math.max(0, Math.ceil(ms / 1000))
+  const h = Math.floor(total / 3600)
+  const m = String(Math.floor((total % 3600) / 60)).padStart(h > 0 ? 2 : 1, '0')
+  const s = String(total % 60).padStart(2, '0')
+  return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`
+}
+
 export const percent = (score: number, max: number) => (max > 0 ? Math.round((score / max) * 100) : 0)
 
 export type ScoreBand = 'low' | 'mid' | 'high'
