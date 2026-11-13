@@ -42,7 +42,7 @@ export default function QuestionNavigator({ questions, answers, currentIndex, on
                       aria-label={`Pregunta ${question.position}, ${isAnswered ? 'respondida' : 'sin responder'}`}
                       className={`grid aspect-[3/4] w-full place-items-center rounded-md text-xs font-bold lg:aspect-auto lg:h-9 lg:text-sm tabular-nums transition-colors duration-200 ${
                         isAnswered
-                          ? 'bg-emerald text-navy'
+                          ? 'animate-pop bg-emerald text-navy'
                           : 'border-2 border-dashed border-slot text-ink-muted hover:border-solid hover:border-navy'
                       } ${isCurrent ? 'ring-2 ring-navy ring-offset-2 ring-offset-white' : ''}`}
                     >

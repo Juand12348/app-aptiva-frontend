@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { Link, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { ApiError, getErrorMessage } from '../api/client'
 import { getExamResult, regenerateDiagnosis } from '../api/exams'
+import { getExamHistory } from '../api/students'
 import type { ExamResult } from '../api/types'
 import { useStudent } from '../auth/useAuth'
 import ComponentBarChart from '../components/charts/ComponentBarChart'
@@ -61,6 +62,22 @@ export default function Result() {
       active = false
     }
   }, [examId, validId, hasFresh, attempt])
+
+  // Score of the exam before this one, only to celebrate an improvement right after submitting.
+  const [previousScore, setPreviousScore] = useState<number | null>(null)
+  useEffect(() => {
+    if (!hasFresh) return
+    let active = true
+    getExamHistory()
+      .then((items) => {
+        const previous = items.find((item) => item.exam_id !== examId)
+        if (active && previous) setPreviousScore(previous.total_score)
+      })
+      .catch(() => {}) // The celebration is optional: the result itself already loaded.
+    return () => {
+      active = false
+    }
+  }, [hasFresh, examId])
 
   async function retryDiagnosis() {
     if (diagnosis.retrying) return
@@ -144,7 +161,7 @@ export default function Result() {
     <div className="space-y-6">
       {navState?.alreadyGraded && <Alert>Este examen ya había sido calificado. Aquí está tu resultado.</Alert>}
 
-      <ScoreSummary key={result.exam_id} result={result} celebrate={hasFresh} />
+      <ScoreSummary key={result.exam_id} result={result} celebrate={hasFresh} previousScore={previousScore} />
 
       <div className="grid gap-6 lg:grid-cols-2">
         <section aria-labelledby="components-title" className={cardClass}>

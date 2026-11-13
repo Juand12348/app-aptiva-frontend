@@ -13,19 +13,22 @@ interface Props {
   result: ExamResult
   /** Only the fresh result right after submitting gets the celebration. */
   celebrate: boolean
+  /** Total of the exam before this one, when known. */
+  previousScore?: number | null
 }
 
-export default function ScoreSummary({ result, celebrate }: Props) {
+export default function ScoreSummary({ result, celebrate, previousScore = null }: Props) {
   const pct = percent(result.total_score, result.max_score)
   const band = scoreBand(pct)
   const shown = useCountUp(result.total_score)
+  const gain = celebrate && previousScore !== null ? result.total_score - previousScore : 0
 
   return (
     <section
       aria-labelledby="score-title"
       className="bg-slots relative overflow-hidden rounded-2xl bg-navy px-6 py-8 text-white shadow-[0_16px_36px_rgb(14_34_64/0.22)] sm:px-10 sm:py-10"
     >
-      {celebrate && band === 'high' && <Confetti />}
+      {celebrate && (band === 'high' || gain > 0) && <Confetti />}
       <h1 id="score-title" className="text-2xl font-extrabold sm:text-3xl">
         Tu resultado
       </h1>
@@ -45,6 +48,14 @@ export default function ScoreSummary({ result, celebrate }: Props) {
           {pct} %
         </span>
       </div>
+      {gain > 0 && (
+        <p
+          role="status"
+          className="mt-4 inline-block animate-pop rounded-full bg-emerald px-4 py-1.5 font-display text-base font-extrabold text-navy"
+        >
+          ¡Subiste {gain} {gain === 1 ? 'punto' : 'puntos'} frente a tu examen anterior!
+        </p>
+      )}
       <p className="mt-5 max-w-xl text-lg text-paper-deep">{MESSAGE[band]}</p>
     </section>
   )

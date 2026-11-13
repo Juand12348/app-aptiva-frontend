@@ -22,7 +22,8 @@ export default function QuestionCard({ question, selectedOptionId, onSelect }: P
       <div className="relative rounded-2xl border-[6px] border-white bg-white p-5 pt-6 shadow-[0_14px_34px_rgb(14_34_64/0.16)] ring-2 ring-navy sm:p-7">
         <span
           aria-hidden="true"
-          className="absolute -top-6 right-4 grid h-16 w-16 rotate-6 place-items-center rounded-2xl bg-navy font-display text-3xl font-extrabold text-white tabular-nums shadow-[0_8px_18px_rgb(14_34_64/0.3)]"
+          style={{ '--tilt': '6deg', animationDelay: '120ms' } as CSSProperties}
+          className="absolute -top-6 right-4 grid h-16 w-16 animate-stick place-items-center rounded-2xl bg-navy font-display text-3xl font-extrabold text-white tabular-nums shadow-[0_8px_18px_rgb(14_34_64/0.3)]"
         >
           {question.position}
         </span>
@@ -82,6 +83,25 @@ export default function QuestionCard({ question, selectedOptionId, onSelect }: P
                   {OPTION_LETTERS[i]}
                 </span>
                 <span className="pt-0.5 whitespace-pre-line">{option.text}</span>
+                {checked && (
+                  <svg
+                    aria-hidden="true"
+                    viewBox="0 0 20 20"
+                    className="ml-auto h-6 w-6 shrink-0 self-center"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.6"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  >
+                    <path
+                      d="m4 10.5 4 4 8-9"
+                      pathLength="1"
+                      strokeDasharray="1"
+                      className="animate-[draw_0.4s_var(--ease-out-expo)_both]"
+                    />
+                  </svg>
+                )}
               </label>
             )
           })}

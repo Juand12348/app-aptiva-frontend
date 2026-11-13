@@ -1,16 +1,20 @@
 import type { ComponentStats } from '../../api/types'
 import { COMPONENT_NOTES, DIFFICULTY_ORDER } from '../../lib/constants'
 import { formatDecimal, percent } from '../../lib/format'
+import { useCountUp } from '../../lib/useCountUp'
 import AccuracyBars from '../charts/AccuracyBars'
 
 export default function ComponentStatsCard({ stats }: { stats: ComponentStats }) {
+  // Counts in tenths so 6,5 climbs smoothly instead of jumping between integers.
+  const shownAverage = useCountUp(Math.round(stats.average_score * 10), 1100) / 10
   return (
-    <article className="rounded-2xl border-[6px] border-white bg-white p-5 shadow-[0_12px_30px_rgb(14_34_64/0.12)] ring-2 ring-navy">
+    <article className="h-full rounded-2xl border-[6px] border-white bg-white p-5 shadow-[0_12px_30px_rgb(14_34_64/0.12)] ring-2 ring-navy transition duration-300 ease-out-expo hover:-translate-y-1 hover:shadow-[0_18px_36px_rgb(14_34_64/0.18)]">
       <h3 className="text-lg font-extrabold">{stats.component}</h3>
       <p className="text-sm text-ink-muted">{COMPONENT_NOTES[stats.component]}</p>
 
       <p className="mt-4 font-display text-4xl leading-none font-extrabold tabular-nums">
-        {formatDecimal(stats.average_score)}
+        <span aria-hidden="true">{formatDecimal(shownAverage)}</span>
+        <span className="sr-only">{formatDecimal(stats.average_score)}</span>
         <span className="text-xl text-ink-muted">/{stats.max_score}</span>
         <span className="ml-2 text-sm font-bold text-ink-muted">promedio</span>
       </p>

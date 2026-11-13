@@ -64,20 +64,26 @@
     0%, 100% { translate: 0 0; }
     50% { translate: 0 -6px; }
   }
-  /* Celebration: mini stickers falling across the viewport. */
-  @keyframes fall {
-    from { transform: translateY(-12vh) rotate(0deg); opacity: 1; }
-    85% { opacity: 1; }
-    to { transform: translateY(110vh) rotate(var(--spin, 360deg)); opacity: 0; }
-  }
   /* Score bars fill from the left. */
   @keyframes grow {
     from { transform: scaleX(0); }
+  }
+  /* A check mark drawing itself (the path uses pathLength="1"). */
+  @keyframes draw {
+    from { stroke-dashoffset: 1; }
   }
   @keyframes nudge {
     25% { transform: translateX(-4px); }
     75% { transform: translateX(4px); }
   }
+}
+
+/* Celebration: mini stickers falling across the viewport. Outside @theme on purpose: Confetti uses it from an
+   inline style, and Tailwind only emits @theme keyframes that a utility class references. */
+@keyframes fall {
+  from { transform: translateY(-12vh) rotate(0deg); opacity: 1; }
+  85% { opacity: 1; }
+  to { transform: translateY(110vh) rotate(var(--spin, 360deg)); opacity: 0; }
 }
 
 /* Empty album slots printed faintly on the navy cover. */
