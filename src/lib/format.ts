@@ -40,6 +40,9 @@ export function formatCountdown(ms: number) {
   return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`
 }
 
+/** "6,5": at most one decimal, comma as in the rest of the UI. */
+export const formatDecimal = (n: number) => n.toLocaleString('es-CO', { maximumFractionDigits: 1 })
+
 export const percent = (score: number, max: number) => (max > 0 ? Math.round((score / max) * 100) : 0)
 
 export type ScoreBand = 'low' | 'mid' | 'high'

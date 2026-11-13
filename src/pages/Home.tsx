@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { lazy, Suspense, useState } from 'react'
 import { useStudent } from '../auth/useAuth'
 import StartExamCard from '../components/exam/StartExamCard'
 import LastResultCard from '../components/result/LastResultCard'
 import ConfirmDialog from '../components/ui/ConfirmDialog'
 import { clearExam, loadExam, msLeft } from '../lib/examStorage'
 import { useStartExam } from '../lib/useStartExam'
+
+// Draws charts: lazy-load it so Recharts stays out of the first bundle.
+const StatsDashboard = lazy(() => import('../components/result/StatsDashboard'))
 
 export default function Home() {
   const student = useStudent()
@@ -47,6 +50,16 @@ export default function Home() {
         />
         <LastResultCard />
       </div>
+
+      <Suspense
+        fallback={
+          <div role="status" className="h-72 animate-pulse rounded-2xl bg-white">
+            <span className="sr-only">Cargando tu progreso…</span>
+          </div>
+        }
+      >
+        <StatsDashboard />
+      </Suspense>
 
       <ConfirmDialog
         open={confirmOpen}

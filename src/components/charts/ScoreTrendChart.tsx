@@ -8,12 +8,26 @@ const GRID = '#d6e4f5'
 const INK_MUTED = '#3e5878'
 
 /** One series (total score per exam, oldest → newest), so no legend: the section title names it. */
-export default function ScoreTrendChart({ points }: { points: TrendPoint[] }) {
+export default function ScoreTrendChart({
+  points,
+  onSelectPoint,
+}: {
+  points: TrendPoint[]
+  /** Called with the index into `points` when a point is clicked or tapped. */
+  onSelectPoint?: (index: number) => void
+}) {
   return (
     <>
-      <div className="h-56" aria-hidden="true">
+      <div className={`h-56 ${onSelectPoint ? 'cursor-pointer' : ''}`} aria-hidden="true">
         <ResponsiveContainer width="100%" height="100%">
-          <LineChart data={points} margin={{ top: 12, right: 16, bottom: 0, left: -16 }}>
+          <LineChart
+            data={points}
+            margin={{ top: 12, right: 16, bottom: 0, left: -16 }}
+            onClick={(state) => {
+              const i = Number(state.activeTooltipIndex)
+              if (onSelectPoint && Number.isInteger(i) && i >= 0 && i < points.length) onSelectPoint(i)
+            }}
+          >
             <CartesianGrid vertical={false} stroke={GRID} />
             <XAxis
               dataKey="n"

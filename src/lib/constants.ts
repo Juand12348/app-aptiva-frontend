@@ -13,4 +13,7 @@ export const COMPONENT_NOTES: Record<Component, string> = {
   Geometría: 'Figuras, ángulos, áreas y volúmenes.',
 }
 
+/** The API sends Difícil, Fácil, Medio (alphabetical); students read easy → hard. */
+export const DIFFICULTY_ORDER: Difficulty[] = ['Fácil', 'Medio', 'Difícil']
+
 export const DIFFICULTY_LEVEL: Record<Difficulty, number> = { Fácil: 1, Medio: 2, Difícil: 3 }
